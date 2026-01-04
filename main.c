@@ -19,12 +19,12 @@
 
 #define NO_OF_SPRINGS 8
 
-void draw_spring() {
-    int distance = MASS_PAD - VLINE_PAD;
+void draw_spring(float mass_offset) {
+    float distance = mass_offset - VLINE_PAD;
     int n = distance / NO_OF_SPRINGS;
 
     Vector2 spring_start = {VLINE_PAD, (HLINE_PAD - HSPRING_PAD)};
-    Vector2 spring_end = {MASS_PAD, (HLINE_PAD - HSPRING_PAD)};
+    Vector2 spring_end = {mass_offset, (HLINE_PAD - HSPRING_PAD)};
 
     int springs[NO_OF_SPRINGS];
     for (int i = 0; i < NO_OF_SPRINGS; i++) {
@@ -108,7 +108,7 @@ int main(void) {
         draw_planes();
         draw_mass(mass_offset);
         mass_offset += 0.1;
-        draw_spring();
+        draw_spring(mass_offset);
         EndDrawing();
     }
 
