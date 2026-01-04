@@ -19,9 +19,14 @@
 
 #define NO_OF_SPRINGS 8
 
+// temporary values
+#define MIN_DISTANCE (VLINE_PAD + 70)
+#define MAX_DISTANCE (VLINE_PAD + 500)
+
 void draw_spring(float mass_offset) {
     float distance = mass_offset - VLINE_PAD;
     int n = distance / NO_OF_SPRINGS;
+
 
     Vector2 spring_start = {VLINE_PAD, (HLINE_PAD - HSPRING_PAD)};
     Vector2 spring_end = {mass_offset, (HLINE_PAD - HSPRING_PAD)};
@@ -35,7 +40,7 @@ void draw_spring(float mass_offset) {
         spring_start,
         (Vector2) {springs[1], SPRING_TOP},
         THICKNESS,
-        YELLOW
+        RAYWHITE
     );
 
     if ((NO_OF_SPRINGS - 1) % 2 == 0) {
@@ -43,14 +48,14 @@ void draw_spring(float mass_offset) {
             (Vector2) {springs[NO_OF_SPRINGS - 1], SPRING_BOTTOM},
             spring_end,
             THICKNESS,
-            GREEN
+            RAYWHITE
         );
     } else {
         DrawLineEx(
             (Vector2) {springs[NO_OF_SPRINGS - 1], SPRING_TOP},
             spring_end,
             THICKNESS,
-            BLUE
+            RAYWHITE
         );
     }
 
@@ -60,14 +65,14 @@ void draw_spring(float mass_offset) {
                 (Vector2) {springs[i], SPRING_BOTTOM},
                 (Vector2) {springs[i+1], SPRING_TOP},
                 THICKNESS,
-                GREEN
+                RAYWHITE
             );
         } else {
             DrawLineEx(
                 (Vector2) {springs[i], SPRING_TOP},
                 (Vector2) {springs[i+1], SPRING_BOTTOM},
                 THICKNESS,
-                BLUE
+                RAYWHITE
             );
         }
     }
@@ -99,7 +104,8 @@ void draw_mass(float mass_offset) {
 int main(void) {
     InitWindow(WIDTH, HEIGHT, "raylib");
 
-    float mass_offset = VLINE_PAD;
+    float mass_offset = VLINE_PAD + 200; //300
+    bool decreasing = true;
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(BLACK);
@@ -107,7 +113,19 @@ int main(void) {
         DrawText("Spring Simulation!", WIDTH/3, HEIGHT/4, 30, GREEN);
         draw_planes();
         draw_mass(mass_offset);
-        mass_offset += 0.1;
+
+        if (decreasing && mass_offset >= MIN_DISTANCE) { // 300 > 170 (min)
+            mass_offset -= 0.1;
+        } else {
+            decreasing = false;
+        }
+
+        if (!decreasing && mass_offset <= MAX_DISTANCE) { // 300 < 600 (max)
+            mass_offset += 0.1;
+        } else {
+            decreasing = true;
+        }
+
         draw_spring(mass_offset);
         EndDrawing();
     }
